@@ -21,7 +21,7 @@ public class QuanLySinhVien {
      String name = sc.nextLine();
      System.out.println("nhap email cua sinh vien");
      String email = sc.nextLine();
-     int classID;
+     int classID = 0;
       while(true) {
           System.out.print("nhap ID lop cua sinh vien");
           String input = sc.nextLine();
