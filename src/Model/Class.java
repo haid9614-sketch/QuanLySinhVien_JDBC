@@ -24,6 +24,6 @@ public class Class {
     }
    @Override
     public String toString() {
-        return "Ten Lop hoc: " + this.nameClass + "ma lop: " + this.classID;
+        return "Ten Lop hoc: " + this.nameClass + " | ma lop: " + this.classID;
    }
 }
