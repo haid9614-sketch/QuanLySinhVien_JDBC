@@ -62,30 +62,43 @@ public class StudentDAO {
         return listStudent;
     }
     public void deleteStudent(int ID) {
-        ArrayList<Student> list = getAllStudent();
-        boolean find = false;
-        for(Student x : list) {
-            if(x.getStudentID() == ID){
-                find = true;
+        String sql = "delete from student where studentID = ?";
+        try (Connection conn = ConnectionSQL.ketNoi();
+             PreparedStatement pr = conn.prepareStatement(sql)) {
+            pr.setInt(1, ID);
+            int row = pr.executeUpdate();
+            if (row > 0) {
+                System.out.println("DA XOA SINH VIEN THANH CONG");
+            } else {
+                System.out.println("Loi: Sinh vien khong ton tai!");
             }
+        } catch (SQLException e) {
+            System.out.println("loi database");
+            e.printStackTrace();
         }
-        if(find == false) {
-            System.out.println("Loi Sinh vien Khong ton tai");
-        } else {
-            String sql = "delete from student where studentID = ?";
-            try (Connection conn = ConnectionSQL.ketNoi();
-                 PreparedStatement pr = conn.prepareStatement(sql)) {
-                pr.setInt(1, ID);
-                int row = pr.executeUpdate();
-                if (row > 0) {
-                    System.out.println("DA XOA SINH VIEN THANH CONG");
-                } else {
-                    System.out.println("xoa sinh vien that bai");
+    }
+    public ArrayList<Student> searchStudent(String name) {
+        ArrayList<Student> list = new ArrayList<>();
+        String sql = "select * from student s inner join class c on s.classID = c.classID where lower(name) like ?";
+        try( Connection conn = ConnectionSQL.ketNoi();
+                PreparedStatement pr = conn.prepareStatement(sql)
+                ) { pr.setString(1, "%" + name.toLowerCase() + "%");
+            try(ResultSet rs = pr.executeQuery()) {
+                while(rs.next()) {
+                    Student st = new Student();
+                    st.setStudentID(rs.getInt("studentID"));
+                    st.setName(rs.getString("name"));
+                    st.setEmail(rs.getString("email"));
+                    st.setClassID(rs.getInt("classID"));
+                    st.setNameClass(rs.getString("nameClass"));
+                    list.add(st);
                 }
-            } catch (SQLException e) {
-                System.out.println("loi dataBase");
-                e.printStackTrace();
+
             }
+        }catch (SQLException e) {
+            System.out.println("loi da database");
+            e.printStackTrace();
         }
+        return list;
     }
 }
